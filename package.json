@@ -1,0 +1,28 @@
+{
+  "name": "statebinderk",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Binding state variables to HTMLElements, making them reactive by directly and efficiently updating targeted properties in the DOM.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mk314k/StateBinder.git"
+  },
+  "keywords": [
+    "state",
+    "statebinder",
+    "reactive"
+  ],
+  "author": "mk314k",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "@types/jest": "^27.0.2",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.5.4"
+  }
+}
+
