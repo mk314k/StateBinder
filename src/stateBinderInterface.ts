@@ -1,4 +1,6 @@
-type HTMLUpdateFunction<T> = (element:HTMLElement, state?:T) => void;
+export type HTMLUpdateFunction<T> = (element:HTMLElement, state:T) => void;
+
+
 
 //Single State to Single Element
 interface SingleStateSingleBinder<T>{
