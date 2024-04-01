@@ -1,6 +1,6 @@
 {
   "name": "statebinderk",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
   "description": "Binding state variables to HTMLElements, making them reactive by directly and efficiently updating targeted properties in the DOM.",
   "main": "src/index.ts",
