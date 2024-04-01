@@ -1,7 +1,5 @@
 export type HTMLUpdateFunction<T> = (element:HTMLElement, state:T) => void;
 
-
-
 //Single State to Single Element
 interface SingleStateSingleBinder<T>{
     // new(state_0:T, id:string, updateFunction:HTMLUpdateFunction<T>);
@@ -14,17 +12,38 @@ interface SingleStyleStateSingleBinder<T>{
 }
 
 //Single State Multiple Element Binding
-interface StateBinder<T>{
-    // constructor(state_0:T);
-    addBinding(id:string, updateFunction:HTMLUpdateFunction<T>):void;
-    transition(newState:T):void;
+interface StateBinder<T> {
+    /**
+     * Adds a binding between an element ID and an update function.
+     * @param id The ID of the element.
+     * @param updateFunction The update function to be bound.
+     */
+    addBinding(id: string, updateFunction: HTMLUpdateFunction<T>): void;
+    /**
+     * Transitions the state to a new state.
+     * @param newState The new state.
+     */
+    transition(newState: T): void;
 }
 
-interface StyleStateBinder<T>{
-    // constructor(state_0:T);
-    stateToStyle(state:T):string;
-    addBinding(id:string, prop:string):void;
-    transition(newState:T):void;
+interface StyleStateBinder<T> {
+    /**
+     * Converts the state to a CSS style string.
+     * @param state The state to be converted.
+     * @returns A CSS style string representing the state.
+     */
+    stateToStyle(state: T): string;
+    /**
+     * Adds a binding between an element ID and a style property.
+     * @param id The ID of the element.
+     * @param prop The name of the style property.
+     */
+    addBinding(id: string, prop: string): void;
+    /**
+     * Transitions the state to a new state.
+     * @param newState The new state.
+     */
+    transition(newState: T): void;
 }
 
 //Multiple State - Element Single update method 

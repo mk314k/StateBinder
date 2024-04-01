@@ -132,6 +132,13 @@ export class StateVarList<T>{
             throw Error('index out of bounds')
         }
     }
+    public current(index:number){
+        if (index >=0 && index<this.ids.length){
+            return this.states[index];
+        }else{
+            throw Error('index out of bounds');
+        }
+    }
     public listTransition(nextState:T[]){
         if (nextState.length === this.states.length){
             nextState.map((state, index)=>{
