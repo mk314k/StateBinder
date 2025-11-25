@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>StateBinder Example</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <h1 id="title">StateBinder demo</h1>
+  <div>
+    <span id="counter">0</span>
+    <button id="inc">+</button>
+    <button id="dec">-</button>
+  </div>
+  <script type="module">
+    import { StateVar, StyleVar } from '../dist/index.js';
+
+    const lookup = (id) => document.getElementById(id);
+
+    const count = new StateVar(0, 'counter', (el, v) => { el.textContent = String(v); }, lookup);
+    const color = new StyleVar('#222', 'title', 'color', (v) => v, lookup);
+
+    document.getElementById('inc').addEventListener('click', () => {
+      count.transition(count.current() + 1);
+    });
+    document.getElementById('dec').addEventListener('click', () => {
+      count.transition(count.current() - 1);
+    });
+
+    // Simple derived style change
+    const updateColor = () => {
+      const val = count.current();
+      color.transition(val >= 0 ? '#0a0' : '#a00');
+    };
+
+    const originalTransition = count.transition.bind(count);
+    count.transition = (next) => { originalTransition(next); updateColor(); };
+    updateColor();
+  </script>
+</body>
+</html>
