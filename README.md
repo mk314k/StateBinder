@@ -1,10 +1,15 @@
 # StateBinder
 
-StateBinder is a library for binding state variables to HTMLElements, making them reactive by directly and efficiently updating targeted properties in the DOM.
+A zero-dependency, DOM-first state binder. StateBinder wires plain values to specific DOM nodes without frameworks, avoiding virtual DOM churn or component re-renders.
+
+## Why
+
+- Minimal surface: a few tiny classes for state and style bindings.
+- Zero runtime dependencies; ships ESM + type definitions.
+- SSR/test friendly: DOM access is guarded (no `document` -> no throw).
+- Direct DOM writes only to targeted nodes, avoiding broad re-renders.
 
 ## Installation
-
-You can install StateBinder via npm:
 
 ```bash
 npm install statebinderk
@@ -12,43 +17,77 @@ npm install statebinderk
 
 ## Usage
 
-### Basic Usage
-
-Here's a basic example demonstrating how to use StateBinder:
+### Basic state binding
 
 ```typescript
 import { StateVar } from 'statebinderk';
 
-// Define an update function
-const updateFunction = (element: HTMLElement, state: number) => {
-    element.textContent = `State: ${state}`;
+const renderCount = (element: HTMLElement, count: number) => {
+  element.textContent = `Count: ${count}`;
 };
 
-// Create a state variable bound to an HTMLElement and an update function
-const stateVar = new StateVar<number>(0, 'myElement', updateFunction);
+const count = new StateVar<number>(0, 'counter', renderCount);
 
-// Transition the state
-stateVar.transition(42);
+count.transition(1); // updates #counter only
 ```
 
-### Advanced Usage
-
-StateBinder provides advanced features for managing state and style bindings:
-
-- MultiStateVar: A multi-state variable that can bind multiple update functions to different HTMLElements.
-- MultiStyleVar: A multi-style variable that can bind multiple style properties to different HTMLElements.
-- StateVarList: A list of state variables with methods for batch transitions and updates.
-- StyleVarList: A list of style variables with methods for batch transitions and updates.
+### Style binding
 
 ```typescript
-import { MultiStateVar, MultiStyleVar, StateVarList, StyleVarList } from 'statebinderk';
+import { StyleVar } from 'statebinderk';
 
-// Usage examples for advanced features...
+const color = new StyleVar<string>( '#222', 'title', 'color');
+color.transition('#f43'); // sets style color on #title
 ```
+
+### Multiple bindings
+
+```typescript
+import { MultiStateVar, MultiStyleVar, StateVarList, StyleVarList, queueTransitions } from 'statebinderk';
+
+const multi = new MultiStateVar<number>(0);
+multi.addBinding('a', (el, state) => { el.textContent = `${state}`; });
+multi.addBinding('b', (el, state) => { el.textContent = `${state * 2}`; });
+multi.transition(5);
+
+const styles = new StyleVarList(
+  [{ id: 'boxA', state: '10px' }, { id: 'boxB', state: '12px' }],
+  'padding',
+  (px) => `${px}`,
+);
+styles.listTransition(['14px', '16px']);
+
+// Remove or clear bindings when needed
+multi.removeBinding('b');
+styles.clearBindings();
+
+// Optional: batch synchronous transitions
+queueTransitions([
+  () => multi.transition(6),
+  () => styles.transition(0, '18px'),
+]);
+```
+
+### Custom element lookup (SSR/tests)
+
+Set a global lookup once (default: `document.getElementById`), or override per instance. This helps in SSR/tests:
+
+```typescript
+import { setGlobalLookup, StateVar } from 'statebinderk';
+
+const lookup = (id: string) => domStub[id] ?? null;
+setGlobalLookup(lookup);
+
+const state = new StateVar(0, 'node', (el, v) => { el.value = String(v); });
+```
+
+## Development
+
+- Build: `npm run build` (emits ESM + `.d.ts` to `dist/`)
 
 ## Contributing
 
-Contributions to StateBinder are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request on GitHub.
+PRs welcome. Please keep the API small, zero-dependency, and framework-agnostic.
 
 ## License
 
